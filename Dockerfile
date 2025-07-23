@@ -29,15 +29,17 @@ COPY src/extra_model_paths.yaml /comfyui/
 WORKDIR /
 
 # copy entrypoint and helpers
-COPY src/start.sh       /start.sh
-COPY src/restore_snapshot.sh /restore_snapshot.sh
-COPY src/rp_handler.py  /rp_handler.py
-COPY test_input.json    /test_input.json
+COPY src/start.sh              /start.sh
+COPY src/restore_snapshot.sh   /restore_snapshot.sh
+COPY src/rp_handler.py         /rp_handler.py
+COPY test_input.json           /test_input.json
 
-RUN chmod +x /start.sh /restore_snapshot.sh
+# fix line endings and make executable
+RUN sed -i 's/\r$//' /restore_snapshot.sh \
+    && chmod +x /start.sh /restore_snapshot.sh
 
 # copy your snapshot and restore custom nodes
-COPY *snapshot*.json    /snapshot.json
+COPY *snapshot*.json           /snapshot.json
 RUN /restore_snapshot.sh /snapshot.json
 
 # default command
